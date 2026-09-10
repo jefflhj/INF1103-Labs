@@ -21,3 +21,8 @@ while True:
     inventory += stock_input
     print(f"\n[+] {stock_input}")
     print(f"Current Inventory: {inventory}\n")
+
+    # Requirement 7: Trigger overstock alert.
+    if inventory > 500:
+        print(f"\n[Alert!] Total inventory exceeded 500 by {inventory - 500}. Exiting...")
+        break
