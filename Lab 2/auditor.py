@@ -16,3 +16,8 @@ while True:
 
     # Requirement 3: Accept stock values as integers.
     stock_input = int(stock_input)
+
+    # Requirement 6: Manage state.
+    inventory += stock_input
+    print(f"\n[+] {stock_input}")
+    print(f"Current Inventory: {inventory}\n")
