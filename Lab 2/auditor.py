@@ -9,5 +9,10 @@ while True:
         print("Exiting...")
         break
 
+    # Requirement 4 & 5: Handle invalid inputs and reject negative numbers.
+    if not stock_input.isdigit():
+        print("\nPlease enter a valid number.\n")
+        continue
+
     # Requirement 3: Accept stock values as integers.
     stock_input = int(stock_input)
