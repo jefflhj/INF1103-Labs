@@ -8,3 +8,6 @@ while True:
     if stock_input.lower() == "quit":
         print("Exiting...")
         break
+
+    # Requirement 3: Accept stock values as integers.
+    stock_input = int(stock_input)
