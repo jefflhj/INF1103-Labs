@@ -1,4 +1,3 @@
-
 # Additional: Ask for the delivery cost.
 def get_delivery_cost():
     while True:
@@ -33,14 +32,14 @@ def process_delivery(current_total, new_value):
 # Requirement 3: Calculate the tax for that delivery.
 def calculate_tax(amount):
     tax_rate = 0.1
-    return amount * tax_rate
+    return round(amount * tax_rate, 2)
 
 # Requirement 4: Reporting.
 def generate_report(total_units, failed_attempts):
     print(f"\nTotal Units Processed: {total_units}")
     print(f"Failed / Rejected Entries: {failed_attempts}\n")
-    # print(f"Total Delivery Cost: {total_delivery_cost}")
-    # print(f"Total Delivery Tax: {total_delivery_tax}\n")
+    # print(f"Total Delivery Cost: ${total_delivery_cost}")
+    # print(f"Total Delivery Tax: ${total_delivery_tax}\n")
 
 # Main function to run the program
 def main():
@@ -59,8 +58,8 @@ def main():
         delivery_cost = get_delivery_cost()
         # calculate tax
         tax = calculate_tax(delivery_cost)
-        print(f"\nDelivery Cost: {delivery_cost}")
-        print(f"Tax: {tax}")
+        print(f"\nDelivery Cost: ${delivery_cost}")
+        print(f"Tax: ${tax}")
 
         # Requirement 3: Add the delivery amount to the running total.
         total_delivery_cost += delivery_cost
@@ -80,3 +79,13 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# after confirming if this is what they want,
+# push to github
+# git log > log.txt
+# dockerr mount and run
+# screrenshot docker stuff
+# screenshot docker images command
+# scrreenshot of image runnign successfully
+# zip everythn and submit to xsite
