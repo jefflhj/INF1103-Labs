@@ -36,7 +36,7 @@ def get_database(database_filepath):
 
     except FileNotFoundError:
         with open(database_filepath, "w") as file:
-            raw_database = repr({})
+            raw_database = repr({"inventory": 0, "rejected_entries": 0, "delivery_expenditure": 0.00, "tax_expenditure": 0.00, "delivery_history":[]})
             file.write(raw_database)
 
     database = ast.literal_eval(raw_database)
@@ -55,7 +55,7 @@ def get_delivery_item_count():
     rejected_entries_count = 0
 
     while True:
-        delivery_item_count = input("Enter the number of items in this delivery (type 'quit' to exit): ")
+        delivery_item_count = input("\n\nEnter the number of items in this delivery (type 'quit' to exit): ")
         
         if delivery_item_count.lower() == "quit":
             return "quit", rejected_entries_count
@@ -69,14 +69,14 @@ def get_delivery_item_count():
             return delivery_item_count, rejected_entries_count
         
         except ValueError:
-            print("\nPlease enter a valid number. (Integer)\n")
+            print("\nPlease enter a valid number. (Integer)")
             rejected_entries_count += 1
             continue
 
 
 def get_delivery_cost():
     while True:
-        delivery_cost = input("Enter the delivery cost: ")
+        delivery_cost = input("\nEnter the delivery cost: ")
 
         try:
             delivery_cost = float(delivery_cost)
@@ -107,11 +107,14 @@ def update_local_database(database, delivery_item_count, rejected_entries_count,
     database["delivery_history"].append(delivery_record)
 
 
-def print_summary_report(database):
+def print_summary_report(database):  # consider a func each for total and current history.
     print(f"\nTotal Items Processed: {database["inventory"]}")
     print(f"Rejected User Entries: {database["rejected_entries"]}\n")
     print(f"Total Delivery Expenditure: ${database["delivery_expenditure"]}")
     print(f"Total Delivery Tax Expenditure: ${database["tax_expenditure"]}\n")
+
+    # print("Delivery History Records:")
+    # for rec in database["delivery_history"]
 
 
 def check_overstock(database, delivery_item_count):
@@ -122,16 +125,16 @@ def check_overstock(database, delivery_item_count):
 
 
 def print_option_menu():
-    print("========= Choose An Option =========")
+    print("\n========== Choose An Option ==========")
     print("1) Enter New Delivery Quantity Only")
     print("2) Enter New Delivery With Item Names")
-    print("3) Save & Quit")
+    print("3) Save & Quit\n")
 
     while True:
         chosen_option = input(">>> ")
 
-        if chosen_option != "1" or chosen_option != "2" or chosen_option != "3":
-            print("Please select either '1', '2' or '3'.")
+        if chosen_option != "1" and chosen_option != "2" and chosen_option != "3":
+            print("\nPlease select either '1', '2' or '3'.\n")
             continue
         else:
             return chosen_option
@@ -143,28 +146,55 @@ def enter_new_delivery(database):
     total_quantity = 0
 
     while True:
+        print("Current Orders:\n")
+        for rec in delivery_record:
+            print(*rec)
+
         item_number += 1
-        delivery_item_id = (len(database["delivery_history"])*1000)+(item_number)
-        item_name = input("Enter Product Name: ")
-        item_quantity = input("Enter Quantity: ")
+        delivery_item_id = ((1+len(database["delivery_history"]))*1000)+(item_number)
+        item_name = input("\n\nEnter Product Name: ")
+
+        while True:
+            item_quantity = input("Enter Quantity: ")
+            try:
+                item_quantity = int(item_quantity)
+
+                if item_quantity < 0:
+                    raise ValueError
+
+                break
+
+            except ValueError:
+                print("\nPlease enter a valid number. (Positive Integer)\n")
+                continue
 
         print("\nNew Delivery Item Recorded:")
-        print(f"{delivery_item_id},{item_name},{item_quantity}")
+        print(f"{delivery_item_id}, {item_name}, {item_quantity}")
 
         delivery_record.append((delivery_item_id, item_name, item_quantity))
         total_quantity += item_quantity
 
-        if input("Add another item? ('yes' / 'no')").lower() == "no":
-            delivery_cost = get_delivery_cost()
-            delivery_tax = calculate_delivery_tax(delivery_cost)
+        while True:
+            add_another_item = input("\n\nAdd another item? ('yes' / 'no'): ").lower()
+            if add_another_item == "no":
+                delivery_cost = get_delivery_cost()
+                delivery_tax = calculate_delivery_tax(delivery_cost)
 
-            if check_overstock(database, total_quantity):
-                update_local_database(database, total_quantity, 0, delivery_cost, delivery_tax, delivery_record)
+                if check_overstock(database, total_quantity):
+                    update_local_database(database, total_quantity, 0, delivery_cost, delivery_tax, delivery_record)
                 return
+
+            elif add_another_item == "yes":
+                break
+
+            else:
+                print("\nPlease enter either 'yes' or 'no'.")
+                continue
 
 
 def main():
-    database_filepath = os.getenv("DATABASE_FILE", "/auditor/database/database.txt")
+    #database_filepath = os.getenv("DATABASE_FILE", "/auditor/database/database.txt")
+    database_filepath = r"C:\Users\jeff2\Downloads\INF1103 - Programming Fundamentals\Lab 4\database_test.txt"
     database = get_database(database_filepath)
     
     while True:
@@ -172,6 +202,7 @@ def main():
 
         if chosen_option == "3":
             save_to_database(database_filepath, database)
+            print(f"\nDeliveries successfully saved to {os.path.basename(database_filepath)}")
             print_summary_report(database)
             return
         
