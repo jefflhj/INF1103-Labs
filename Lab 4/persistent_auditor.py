@@ -195,7 +195,7 @@ def enter_new_delivery(database):
 
 
 def main():
-    database_filepath = os.getenv("DATABASE_FILE", "/auditor/database/database.txt")
+    database_filepath = os.getenv("DATABASE_FILE", "/app/database/database.txt")
     database = get_database(database_filepath)
     
     while True:
