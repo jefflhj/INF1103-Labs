@@ -108,10 +108,10 @@ def update_local_database(database, delivery_item_count, rejected_entries_count,
 
 
 def print_summary_report(database):
-    print(f"\nTotal Items Processed: {database["inventory"]}")
-    print(f"Rejected User Entries: {database["rejected_entries"]}\n")
-    print(f"Total Delivery Expenditure: ${database["delivery_expenditure"]}")
-    print(f"Total Delivery Tax Expenditure: ${database["tax_expenditure"]}\n")
+    print(f"\nTotal Items Processed: {database['inventory']}")
+    print(f"Rejected User Entries: {database['rejected_entries']}\n")
+    print(f"Total Delivery Expenditure: ${database['delivery_expenditure']}")
+    print(f"Total Delivery Tax Expenditure: ${database['tax_expenditure']}\n")
 
     print("Delivery History Records:")
     for rec in database["delivery_history"]:
