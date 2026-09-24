@@ -107,14 +107,15 @@ def update_local_database(database, delivery_item_count, rejected_entries_count,
     database["delivery_history"].append(delivery_record)
 
 
-def print_summary_report(database):  # consider a func each for total and current history.
+def print_summary_report(database):
     print(f"\nTotal Items Processed: {database["inventory"]}")
     print(f"Rejected User Entries: {database["rejected_entries"]}\n")
     print(f"Total Delivery Expenditure: ${database["delivery_expenditure"]}")
     print(f"Total Delivery Tax Expenditure: ${database["tax_expenditure"]}\n")
 
-    # print("Delivery History Records:")
-    # for rec in database["delivery_history"]
+    print("Delivery History Records:")
+    for rec in database["delivery_history"]:
+        print(*rec)    
 
 
 def check_overstock(database, delivery_item_count):
@@ -128,13 +129,14 @@ def print_option_menu():
     print("\n========== Choose An Option ==========")
     print("1) Enter New Delivery Quantity Only")
     print("2) Enter New Delivery With Item Names")
-    print("3) Save & Quit\n")
+    print("3) Generate Summary Report")
+    print("4) Save & Quit\n")
 
     while True:
         chosen_option = input(">>> ")
 
-        if chosen_option != "1" and chosen_option != "2" and chosen_option != "3":
-            print("\nPlease select either '1', '2' or '3'.\n")
+        if chosen_option != "1" and chosen_option != "2" and chosen_option != "3" and chosen_option != "4":
+            print("\nPlease select either '1', '2', '3' or '4'.\n")
             continue
         else:
             return chosen_option
@@ -200,11 +202,14 @@ def main():
     while True:
         chosen_option = print_option_menu()
 
-        if chosen_option == "3":
+        if chosen_option == "4":
             save_to_database(database_filepath, database)
             print(f"\nDeliveries successfully saved to {os.path.basename(database_filepath)}")
             print_summary_report(database)
             return
+
+        elif chosen_option == "3":
+            print_summary_report(database)
         
         elif chosen_option == "2":
             enter_new_delivery(database)
