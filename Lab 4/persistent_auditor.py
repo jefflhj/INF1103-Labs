@@ -5,52 +5,40 @@
    The system is used to enter the number of items in a delivery and the cost of the delivery. The system will then 
    calculate the tax on the delivery cost automatically. The system will also automatically keep track of the total 
    number of failed entries made by the user excluding delivery cost entries. These pieces of information will be saved and 
-   stored in a text file.
+   stored in a database text file.
 
-   Variables:
+   Stored Variables:
         inventory:              The current total number of items in the store's physical inventory.
         rejected_entries:       The total number of rejected entries made by the user.
         delivery_expenditure:   The running total cost of all deliveries made to the store.
         tax_expenditure:        The running total tax cost of all deliveries made to the store.
         delivery_history:       A list of lists for every delivery made to the store and their details.
-        inventory_filepath:     The file path to the inventory database text file .
 """
 
 import os
 import ast
 
 
-def exit():
-    pass
-
-
-def get_inventory(inventory_filepath):
+def get_database(database_filepath):
     try:
-        with open(inventory_filepath, "r") as file:
-            raw_inventory = file.read()
+        with open(database_filepath, "r") as file:
+            raw_database = file.read()
 
     except FileNotFoundError:
-        with open(inventory_filepath, "w") as file:
-            raw_inventory = repr({})
-            file.write(raw_inventory)
+        with open(database_filepath, "w") as file:
+            raw_database = repr({})
+            file.write(raw_database)
 
-    inventory = ast.literal_eval(raw_inventory)
-    return inventory
+    database = ast.literal_eval(raw_database)
+    return database
 
 
-def save_inventory(inventory_filepath, inventory):
+def save_to_database(database_filepath, database):
     try:
-        with open(inventory_filepath, "w") as file:
-            file.write(repr(inventory))
+        with open(database_filepath, "w") as file:
+            file.write(repr(database))
     except Exception as e:
         print(f"Error saving inventory: {e}")
-
-
-def update_delivery_history(inventory, delivery_item_count, rejected_entries_count, delivery_cost, delivery_tax):
-    inventory["inventory"] = inventory.get("inventory", 0) + delivery_item_count
-    inventory["rejected_entries"] = inventory.get("rejected_entries", 0) + rejected_entries_count
-    inventory["delivery_expenditure"] = inventory.get("delivery_expenditure", 0) + delivery_cost
-    inventory["tax_expenditure"] = inventory.get("tax_expenditure", 0) + delivery_tax
 
 
 def get_delivery_item_count():
@@ -63,10 +51,15 @@ def get_delivery_item_count():
             return "quit", rejected_entries_count
 
         try:
-            return int(delivery_item_count), rejected_entries_count
+            delivery_item_count = int(delivery_item_count)
+
+            if delivery_item_count < 0:
+                raise ValueError
+            
+            return delivery_item_count, rejected_entries_count
         
         except ValueError:
-            print("\nPlease enter a valid number.\n")
+            print("\nPlease enter a valid number. (Integer)\n")
             rejected_entries_count += 1
             continue
 
@@ -76,11 +69,24 @@ def get_delivery_cost():
         delivery_cost = input("Enter the delivery cost: ")
 
         try:
-            return float(delivery_cost)
+            delivery_cost = float(delivery_cost)
+
+            if delivery_cost < 0:
+                raise ValueError
+            
+            return delivery_cost
         
         except ValueError:
             print("\nPlease enter a valid monetary value. (Will be rounded to 2 decimal places)\n")
             continue
+
+
+def update_local_database(database, delivery_item_count, rejected_entries_count, delivery_cost, delivery_tax):
+    database["inventory"] = database.get("inventory", 0) + delivery_item_count
+    database["rejected_entries"] = database.get("rejected_entries", 0) + rejected_entries_count
+    database["delivery_expenditure"] = database.get("delivery_expenditure", 0) + delivery_cost
+    database["tax_expenditure"] = database.get("tax_expenditure", 0) + delivery_tax
+    database["delivery_history"] = []
 
 
 def calculate_delivery_tax(delivery_cost):
@@ -89,22 +95,28 @@ def calculate_delivery_tax(delivery_cost):
     return round(delivery_cost * tax_rate, 2)
 
 
+def generate_report(inventory):
+    pass
+
+
 def main():
-    inventory_filepath = os.getenv("INVENTORY_FILE", "/auditor/database/inventory.txt")
+    database_filepath = os.getenv("DATABASE_FILE", "/auditor/database/database.txt")
 
-    inventory = get_inventory(inventory_filepath)
+    database = get_database(database_filepath)
 
-    delivery_item_count, rejected_entries_count = get_delivery_item_count()
+    while True:
+        delivery_item_count, rejected_entries_count = get_delivery_item_count()
 
-    if delivery_item_count == "quit":
-        update_delivery_history(inventory, 0, rejected_entries_count, 0, 0)
-        save_inventory(inventory_filepath, inventory)
-        exit()
+        if delivery_item_count == "quit":
+            update_local_database(database, 0, rejected_entries_count, 0, 0)
+            save_to_database(database_filepath, database)
+            generate_report(database)
+            return
 
-    delivery_cost = get_delivery_cost()
-    delivery_tax = calculate_delivery_tax(delivery_cost)
-    
-    update_delivery_history(inventory, delivery_item_count, rejected_entries_count, delivery_cost, delivery_tax)
+        delivery_cost = get_delivery_cost()
+        delivery_tax = calculate_delivery_tax(delivery_cost)
+        
+        update_local_database(database, delivery_item_count, rejected_entries_count, delivery_cost, delivery_tax)
 
 
 
