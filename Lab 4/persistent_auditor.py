@@ -10,7 +10,8 @@
    Lab 4 now allows the user to specify the items in the delivery. Delivery Item ID, Item Name, Quantity.
    The idea here is that the store orders items from a vendor and records these items for stock taking. This system is used 
    to keep track of incoming items, not to place an order for new items.
-   This option will not track rejected entries. Possible with a database of valid item names.
+   This option will not track rejected entries. Possible with a database of valid item names. Only this option will store 
+   a record of the delivery history.
    Note that Delivery = Order and Item = Product.
 
    Stored Variables:
@@ -156,11 +157,13 @@ def enter_new_delivery(database):
         if input("Add another item? ('yes' / 'no')").lower() == "no":
             delivery_cost = get_delivery_cost()
             delivery_tax = calculate_delivery_tax(delivery_cost)
-            update_local_database(database, total_quantity, 0, delivery_cost, delivery_tax, delivery_record)
-            return
+
+            if check_overstock(database, total_quantity):
+                update_local_database(database, total_quantity, 0, delivery_cost, delivery_tax, delivery_record)
+                return
 
 
-def main2():
+def main():
     database_filepath = os.getenv("DATABASE_FILE", "/auditor/database/database.txt")
     database = get_database(database_filepath)
     
@@ -176,37 +179,18 @@ def main2():
             enter_new_delivery(database)
 
         elif chosen_option == "1":
-            get_delivery_item_count()
+            delivery_item_count, rejected_entries_count = get_delivery_item_count()
 
+            if delivery_item_count == "quit":
+                update_local_database(database, 0, rejected_entries_count, 0, 0, None)
+                continue
 
+            delivery_cost = get_delivery_cost()
+            delivery_tax = calculate_delivery_tax(delivery_cost)
 
-
-
-
-
-
-
-
-
-
-def main():
-    database_filepath = os.getenv("DATABASE_FILE", "/auditor/database/database.txt")
-    database = get_database(database_filepath)
-
-    while True:
-        delivery_item_count, rejected_entries_count = get_delivery_item_count()
-
-        if delivery_item_count == "quit":
-            update_local_database(database, 0, rejected_entries_count, 0, 0)
-            save_to_database(database_filepath, database)
-            print_summary_report(database)
-            return
-
-        delivery_cost = get_delivery_cost()
-        delivery_tax = calculate_delivery_tax(delivery_cost)
-
-        if check_overstock(database, delivery_item_count):
-            update_local_database(database, delivery_item_count, rejected_entries_count, delivery_cost, delivery_tax, None)
+            if check_overstock(database, delivery_item_count):
+                update_local_database(database, delivery_item_count, rejected_entries_count, delivery_cost, delivery_tax, None)
+                continue
 
 
 if __name__ == "__main__":
