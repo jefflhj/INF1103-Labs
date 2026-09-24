@@ -96,10 +96,10 @@ def calculate_delivery_tax(delivery_cost):
 
 
 def print_summary_report(database):
-    print(f"\nTotal Items Processed: {inventory["inventory"]}")
-    print(f"Rejected User Entries: {inventory["rejected_entries"]}\n")
-    print(f"Total Delivery Expenditure: ${inventory["delivery_expenditure"]}")
-    print(f"Total Delivery Tax Expenditure: ${inventory["tax_expenditure"]}\n")
+    print(f"\nTotal Items Processed: {database["inventory"]}")
+    print(f"Rejected User Entries: {database["rejected_entries"]}\n")
+    print(f"Total Delivery Expenditure: ${database["delivery_expenditure"]}")
+    print(f"Total Delivery Tax Expenditure: ${database["tax_expenditure"]}\n")
 
 
 def check_overstock(database, delivery_item_count):
