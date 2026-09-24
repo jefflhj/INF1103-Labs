@@ -1,0 +1,1 @@
+{'inventory': 2, 'rejected_entries': 0, 'delivery_expenditure': 23.0, 'tax_expenditure': 2.3, 'delivery_history': [[(1001, 'Wireless Mouse', 2)]]}
