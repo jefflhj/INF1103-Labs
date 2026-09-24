@@ -95,8 +95,18 @@ def calculate_delivery_tax(delivery_cost):
     return round(delivery_cost * tax_rate, 2)
 
 
-def generate_report(inventory):
-    pass
+def print_summary_report(database):
+    print(f"\nTotal Items Processed: {inventory["inventory"]}")
+    print(f"Rejected User Entries: {inventory["rejected_entries"]}\n")
+    print(f"Total Delivery Expenditure: ${inventory["delivery_expenditure"]}")
+    print(f"Total Delivery Tax Expenditure: ${inventory["tax_expenditure"]}\n")
+
+
+def check_overstock(database, delivery_item_count):
+    if (database["inventory"] + delivery_item_count) > 500:
+        print(f"\n[Alert!] Total inventory exceeded 500, this delivery will not be saved.")
+        return False
+    return True
 
 
 def main():
@@ -110,14 +120,15 @@ def main():
         if delivery_item_count == "quit":
             update_local_database(database, 0, rejected_entries_count, 0, 0)
             save_to_database(database_filepath, database)
-            generate_report(database)
+            print_summary_report(database)
             return
 
         delivery_cost = get_delivery_cost()
         delivery_tax = calculate_delivery_tax(delivery_cost)
-        
-        update_local_database(database, delivery_item_count, rejected_entries_count, delivery_cost, delivery_tax)
+
+        if check_overstock(database, delivery_item_count):
+            update_local_database(database, delivery_item_count, rejected_entries_count, delivery_cost, delivery_tax)
 
 
-
-
+if __name__ == "__main__":
+    main()
