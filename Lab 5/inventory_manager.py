@@ -17,7 +17,7 @@ def print_system_banner():
     print("========================================\n")
 
 
-def get_inventory(inventory_filepath):
+def load_inventory(inventory_filepath):
     try:
         with open(inventory_filepath, "r", encoding="utf-8") as file:
             inventory_data = json.load(file)
@@ -199,7 +199,7 @@ def main():
 
     print_system_banner()
 
-    inventory = get_inventory(inventory_filepath)
+    inventory = load_inventory(inventory_filepath)
 
     print_option_menu()
 
