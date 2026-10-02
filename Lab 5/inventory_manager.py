@@ -334,6 +334,35 @@ def add_product(inventory):
     print("Product added successfully!\n")
 
 
+def update_stock(inventory):
+    print("\nUpdate Stock")
+
+    while True:
+        product_id = input("Enter Product ID: ")
+
+        if product_id in inventory:
+            break
+        else:
+            print("\nProduct ID not found. Please try again.\n")
+
+    print("\nProduct Found:")
+    print(f"Name: {inventory[product_id]['name']}")
+    print(f"Current Stock: {inventory[product_id]['stock']}\n")
+
+    while True:
+        try:
+            new_stock_quantity = int(input("New Stock Quantity: "))
+            if new_stock_quantity < 0:
+                raise ValueError
+            break
+        except ValueError:
+            print("\nInvalid stock quantity. Please enter a positive whole number.\n")
+
+    inventory[product_id]['stock'] = new_stock_quantity
+
+    print("\nStock updated successfully!\n")
+
+
 def main():
     print_system_banner()
 
