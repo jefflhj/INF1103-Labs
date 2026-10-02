@@ -32,7 +32,7 @@ def load_inventory(inventory_filepath):
 
         print(f"{pathlib.Path(inventory_filepath).name} not found. Created new inventory file.")
 
-    print("Inventory loaded successfully.")
+    print("Inventory loaded successfully.\n")
 
     return inventory_data
 
@@ -68,7 +68,7 @@ def display_all(inventory):
     print("------------------------------------------------")
 
     for product_id, product_info in inventory.items():
-        print(f"ID: {product_id} | Name: {product_info['name']} | Price: ${product_info['price']} | Stock: {product_info['stock']}")
+        print(f"ID: {product_id} | Name: {product_info['name']} | Price: ${product_info['price']:.2f} | Stock: {product_info['stock']}")
 
     print("------------------------------------------------\n")
 
@@ -163,7 +163,7 @@ def search_product(inventory):
     print("------------------------------------------------")
     print(f"ID: {product_id}")
     print(f"Name: {inventory[product_id]['name']}")
-    print(f"Price: ${inventory[product_id]['price']}")
+    print(f"Price: ${inventory[product_id]['price']:.2f}")
     print(f"Stock: {inventory[product_id]['stock']}")
     print("------------------------------------------------\n")
 
@@ -190,7 +190,7 @@ def save_inventory(inventory, inventory_filepath, manual_save=False):
 def exit_program(inventory, inventory_filepath):
     save_inventory(inventory, inventory_filepath)
 
-    print("\nThank you for using Inventory Management System.")
+    print("Thank you for using Inventory Management System.")
     print("Program terminated.\n")
 
 

@@ -1,0 +1,20 @@
+{
+    "P004": {
+        "product_id": "P004",
+        "name": "Monitor",
+        "price": 299.99,
+        "stock": 50
+    },
+    "P001": {
+        "product_id": "P001",
+        "name": "Laptop",
+        "price": 1200.0,
+        "stock": 15
+    },
+    "P003": {
+        "product_id": "P003",
+        "name": "Keyboard",
+        "price": 45.0,
+        "stock": 25
+    }
+}
