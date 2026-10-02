@@ -196,7 +196,7 @@ def exit_program(inventory, inventory_filepath):
 
 
 def main():
-    inventory_filepath = os.getenv("INVENTORY_FILE", "/app/database/inventory.json")
+    inventory_filepath = os.getenv("INVENTORY_FILE", "./inventory.json")
 
     print_system_banner()
 
