@@ -6,6 +6,7 @@
     Maintain menu system.
 """
 
+import os
 import json
 import pathlib
 import re
@@ -195,7 +196,7 @@ def exit_program(inventory, inventory_filepath):
 
 
 def main():
-    inventory_filepath = "./inventory.json"
+    inventory_filepath = os.getenv("INVENTORY_FILE", "/app/database/inventory.json")
 
     print_system_banner()
 
