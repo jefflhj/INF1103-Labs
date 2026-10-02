@@ -285,7 +285,7 @@ def display_all(inventory):
     print("------------------------------------------------")
 
     for product_id, product_info in inventory.items():
-        print(f"ID: {product_id} | Name: {product_info['name']} | Price: ${product_info['price']:.2f} | Stock: {product_info['stock']}")
+        print(f"ID: {product_id} | Name: {product_info['name']} | Price: ${product_info['price']} | Stock: {product_info['stock']}")
 
     print("------------------------------------------------\n")
 
@@ -299,7 +299,7 @@ def add_product(inventory):
         if re.match(r'^P\d{3}$', product_id):
             if product_id in inventory:
                 print("Product ID already exists.")
-                continue
+                return # just return straight to main menu instead of prompting for new id. Saves trouble of implementing a word to exit the input loop.
             break
         else:
             print("Invalid Product ID format. Please use 'P' followed by 3 digits (e.g., P001).")
@@ -327,7 +327,7 @@ def add_product(inventory):
     inventory[product_id] = {
         "product_id": product_id,
         "name": name,
-        "price": price,
+        "price": round(price, 2),
         "stock": stock
     }
 
@@ -343,7 +343,8 @@ def update_stock(inventory):
         if product_id in inventory:
             break
         else:
-            print("\nProduct ID not found. Please try again.\n")
+            print("\nProduct ID not found\n")
+            return # just return straight to main menu instead of prompting for new id. Saves trouble of implementing a word to exit the search loop.
 
     print("\nProduct Found:")
     print(f"Name: {inventory[product_id]['name']}")
@@ -361,6 +362,27 @@ def update_stock(inventory):
     inventory[product_id]['stock'] = new_stock_quantity
 
     print("\nStock updated successfully!\n")
+
+
+def search_product(inventory):
+    print("\nSearch Product")
+
+    while True:
+        product_id = input("Enter Product ID: ")
+
+        if product_id in inventory:
+            break
+        else:
+            print("\nProduct ID not found.\n")
+            return # just return straight to main menu instead of prompting for new id. Saves trouble of implementing a word to exit the search loop.
+
+    print("\nProduct Found")
+    print("------------------------------------------------")
+    print(f"ID: {product_id}")
+    print(f"Name: {inventory[product_id]['name']}")
+    print(f"Price: ${inventory[product_id]['price']}")
+    print(f"Stock: {inventory[product_id]['stock']}")
+    print("------------------------------------------------\n")
 
 
 def main():
@@ -381,10 +403,12 @@ def main():
                 continue
 
             case 3: # Update Stock
-                pass
+                update_stock(inventory)
+                continue
 
             case 4: # Search Product
-                pass
+                search_product(inventory)
+                continue
 
             case 5: # Save Inventory
                 pass
