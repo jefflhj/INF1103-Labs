@@ -290,6 +290,50 @@ def display_all(inventory):
     print("------------------------------------------------\n")
 
 
+def add_product(inventory):
+    print("\nAdd New Product")
+
+    while True:
+        product_id = input("Product ID: ")
+
+        if re.match(r'^P\d{3}$', product_id):
+            if product_id in inventory:
+                print("Product ID already exists.")
+                continue
+            break
+        else:
+            print("Invalid Product ID format. Please use 'P' followed by 3 digits (e.g., P001).")
+
+    name = input("Product Name: ")
+
+    while True:
+        try:
+            price = float(input("Price: "))
+            if price < 0:
+                raise ValueError
+            break
+        except ValueError:
+            print("Invalid price. Please enter a positive number.")
+
+    while True:
+        try:
+            stock = int(input("Stock Quantity: "))
+            if stock < 0:
+                raise ValueError
+            break
+        except ValueError:
+            print("Invalid stock quantity. Please enter a positive whole number.")
+
+    inventory[product_id] = {
+        "product_id": product_id,
+        "name": name,
+        "price": price,
+        "stock": stock
+    }
+
+    print("Product added successfully!\n")
+
+
 def main():
     print_system_banner()
 
@@ -304,7 +348,8 @@ def main():
                 continue
 
             case 2: # Add Product
-                pass
+                add_product(inventory)
+                continue
 
             case 3: # Update Stock
                 pass
