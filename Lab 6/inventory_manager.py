@@ -18,25 +18,84 @@ class Product:
         self.__price = price
         self.__stock = stock
 
-    def update_stock(quantity):
-        pass
+    def update_stock(self, quantity):
+        if quantity >= 0 and isinstance(quantity, int): # not really needed here since input validation alr done in the update_stock function
+            self.__stock = quantity
+            return True
 
-    def display_information():
-        pass
+        else:
+            return False
+
+    def display_information(self):
+        print(f"ID: {self.__product_id}")
+        print(f"Name: {self.__name}")
+        print(f"Price: ${self.price:.2f}")
+        print(f"Stock: {self.stock}")
+
+    def to_dict(self):
+        return {
+            "product_id": self.__product_id,
+            "name": self.__name,
+            "price": self.__price,
+            "stock": self.__stock
+        }
+
+    @property
+    def product_id(self):
+        return self.__product_id # These are immutable so they cant be edited outide the class even if exposed like this. Example if return a dict, then they would be editable outside.
+
+    @property
+    def name(self):
+        return self.__name
+
+    @property
+    def price(self):
+        return self.__price
+
+    @property
+    def stock(self):
+        return self.__stock
 
 
 class Inventory:
     def __init__(self):
-        self.__products = []
+        self.__products = {}
 
-    def add_product(product):
-        pass
+    def add_product(self, product):
+        if product.product_id in self.__products:
+            print(f"{product.product_id} - {product.name} already exists in the Inventory, it will not be added.")
 
-    def search_product():
-        pass
+        else:
+            self.__products[product.product_id] = product
 
-    def display_all():
-        pass
+    def search_product(self, product_id):
+        if product_id in self.__products:
+            return self.__products[product_id]
+            # self.__products[product_id].display_information()
+
+        else:
+            return None
+            # print(f"The product id '{product_id}' was not found in the Inventory.")
+
+    def display_all(self):
+        if not self.__products:
+            print("The Inventory is empty.")
+
+        else:
+            print("\nCurrent Inventory")
+            print("------------------------------------------------")
+
+            for product in self.__products:
+                product.display_information()
+                print()
+
+            print("\044[A/r------------------------------------------------\n")
+
+    def to_dict(self):
+        return {
+            product_id: product.to_dict()
+            for product_id, product in self.__products.items()
+        }
 
 
 def print_system_banner():
@@ -45,12 +104,15 @@ def print_system_banner():
     print("========================================\n")
 
 
-def load_inventory(inventory_filepath):
+def load_inventory(inventory_filepath, inventory):
     try:
         with open(inventory_filepath, "r", encoding="utf-8") as file:
             inventory_data = json.load(file)
 
         print(f"{pathlib.Path(inventory_filepath).name} found.")
+
+        for product in inventory_data.values():
+            inventory.add_product(Product(product["product_id"], product["name"], product["price"], product["stock"]))
 
     except FileNotFoundError:
         inventory_data = {}
@@ -61,8 +123,6 @@ def load_inventory(inventory_filepath):
         print(f"{pathlib.Path(inventory_filepath).name} not found. Created new inventory file.")
 
     print("Inventory loaded successfully.\n")
-
-    return inventory_data
 
 
 def print_option_menu():
@@ -85,20 +145,6 @@ def get_option_menu_choice():
             continue
         else:
             return int(chosen_option)
-
-
-def display_all(inventory):
-    if not inventory:
-        print("\nNo products found in the inventory.\n")
-        return
-
-    print("\nCurrent Inventory")
-    print("------------------------------------------------")
-
-    for product_id, product_info in inventory.items():
-        print(f"ID: {product_id} | Name: {product_info['name']} | Price: ${product_info['price']:.2f} | Stock: {product_info['stock']}")
-
-    print("------------------------------------------------\n")
 
 
 def add_product(inventory):
@@ -135,12 +181,7 @@ def add_product(inventory):
         except ValueError:
             print("Invalid stock quantity. Please enter a positive whole number.")
 
-    inventory[product_id] = {
-        "product_id": product_id,
-        "name": name,
-        "price": round(price, 2),
-        "stock": stock
-    }
+    inventory.add_product(Product(product_id, name, round(price, 2), stock))
 
     print("Product added successfully!\n")
 
@@ -151,15 +192,17 @@ def update_stock(inventory):
     while True:
         product_id = input("Enter Product ID: ")
 
-        if product_id in inventory:
+        product = inventory.search_product(product_id)
+
+        if product:
             break
         else:
             print("\nProduct ID not found\n")
             return # just return straight to main menu instead of prompting for new id. Saves trouble of implementing a word to exit the search loop.
 
     print("\nProduct Found:")
-    print(f"Name: {inventory[product_id]['name']}")
-    print(f"Current Stock: {inventory[product_id]['stock']}\n")
+    print(f"Name: {product.name}")
+    print(f"Current Stock: {product.stock}\n")
 
     while True:
         try:
@@ -170,7 +213,7 @@ def update_stock(inventory):
         except ValueError:
             print("\nInvalid stock quantity. Please enter a positive whole number.\n")
 
-    inventory[product_id]['stock'] = new_stock_quantity
+    product.update_stock(new_stock_quantity) # will also update the product object in inventory's dict __products
 
     print("\nStock updated successfully!\n")
 
@@ -181,7 +224,9 @@ def search_product(inventory):
     while True:
         product_id = input("Enter Product ID: ")
 
-        if product_id in inventory:
+        product = inventory.search_product(product_id)
+
+        if product:
             break
         else:
             print("\nProduct not found.\n")
@@ -189,10 +234,7 @@ def search_product(inventory):
 
     print("\nProduct Found")
     print("------------------------------------------------")
-    print(f"ID: {product_id}")
-    print(f"Name: {inventory[product_id]['name']}")
-    print(f"Price: ${inventory[product_id]['price']:.2f}")
-    print(f"Stock: {inventory[product_id]['stock']}")
+    product.display_information()
     print("------------------------------------------------\n")
 
 
@@ -204,7 +246,7 @@ def save_inventory(inventory, inventory_filepath, manual_save=False):
 
     try:
         with open(inventory_filepath, "w", encoding="utf-8") as file:
-            json.dump(inventory, file, indent=4)
+            json.dump(inventory.to_dict(), file, indent=4)
 
         if manual_save:
             print(f"Inventory saved successfully to {pathlib.Path(inventory_filepath).name}.\n")
@@ -227,14 +269,16 @@ def main():
 
     print_system_banner()
 
-    inventory = load_inventory(inventory_filepath)
+    inventory = Inventory()
+
+    load_inventory(inventory_filepath, inventory)
 
     print_option_menu()
 
     while True:
         match get_option_menu_choice():
             case 1: # Display All Products
-                display_all(inventory)
+                inventory.display_all()
                 continue
 
             case 2: # Add Product
@@ -260,3 +304,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
