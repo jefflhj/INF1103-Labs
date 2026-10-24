@@ -86,10 +86,10 @@ class Inventory:
             print("------------------------------------------------")
 
             for product in self.__products:
-                product.display_information()
+                self.__products[product].display_information()
                 print()
 
-            print("\044[A/r------------------------------------------------\n")
+            print("\033[A\r------------------------------------------------\n")
 
     def to_dict(self):
         return {
@@ -154,7 +154,7 @@ def add_product(inventory):
         product_id = input("Product ID: ")
 
         if re.match(r'^P\d{3}$', product_id):
-            if product_id in inventory:
+            if inventory.search_product(product_id):
                 print("Product ID already exists.")
                 return # just return straight to main menu instead of prompting for new id. Saves trouble of implementing a word to exit the input loop.
             break
@@ -304,5 +304,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
