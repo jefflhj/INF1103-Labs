@@ -25,6 +25,20 @@ class Product:
         pass
 
 
+class Inventory:
+    def __init__(self):
+        self.__products = []
+
+    def add_product(product):
+        pass
+
+    def search_product():
+        pass
+
+    def display_all():
+        pass
+
+
 def print_system_banner():
     print("\n========================================")
     print("INVENTORY MANAGEMENT SYSTEM")
