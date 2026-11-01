@@ -12,6 +12,12 @@ import re
 from abc import ABC, abstractmethod
 
 
+class CanBeShipped(ABC):
+    @abstractmethod
+    def calculate_shipping_cost(self):
+        pass
+
+
 class Product(ABC):
     def __init__(self, product_id, name, price, stock):
         self.__product_id = product_id
@@ -62,7 +68,7 @@ class Product(ABC):
         return self.__stock
 
 
-class PhysicalProduct(Product):
+class PhysicalProduct(Product, CanBeShipped):
     def __init__(self, product_id, name, price, stock, weight):
         super().__init__(product_id, name, price, stock)
         self.__weight = weight
@@ -78,6 +84,15 @@ class PhysicalProduct(Product):
 
     def get_fulfilment_info(self):
         return f"This product requires physical shipping. Shipping weight: {self.__weight} kg"
+
+    def calculate_shipping_cost(self):
+        base_cost = 1.99
+
+        if self.__weight <= 2.00:
+            return base_cost
+        
+        cost_per_kg = 1.00
+        return base_cost + (cost_per_kg * self.__weight)
 
     @property
     def weight(self):
