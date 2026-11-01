@@ -3,6 +3,14 @@
 
     Lab 7. Object oriented.
     Inheritance, Method Overriding, Abstract Classes, Interfaces using abstract base classes.
+
+    "For example, each saved product should include a type identifier such as “physical” or “digital”."
+    This sounds like only when saved should it include a type identifier.
+
+    For the type identifier, if only implemented during save and load from json, it would require 
+    something like if "weight" in product_dict: to determine if it is a PhysicalProduct or DigitalProduct.
+    This means that if some new product type is added with weight but is not a PhysicalProduct, it would be 
+    misidentified. Instead, storing a type attribute to the product would probably be better.
 """
 
 import os
@@ -24,6 +32,7 @@ class Product(ABC):
         self.__name = name
         self.__price = price
         self.__stock = stock
+        self.__type = None
 
     def update_stock(self, quantity):
         if quantity >= 0 and isinstance(quantity, int): # not really needed here since input validation alr done in the update_stock function
@@ -44,7 +53,8 @@ class Product(ABC):
             "product_id": self.__product_id,
             "name": self.__name,
             "price": self.__price,
-            "stock": self.__stock
+            "stock": self.__stock,
+            "type": self.__type
         }
 
     @abstractmethod
@@ -72,6 +82,7 @@ class PhysicalProduct(Product, CanBeShipped):
     def __init__(self, product_id, name, price, stock, weight):
         super().__init__(product_id, name, price, stock)
         self.__weight = weight
+        self.__type = "physical"
 
     def display_information(self):
         super().display_information()
@@ -103,6 +114,7 @@ class DigitalProduct(Product):
     def __init__(self, product_id, name, price, stock, download_size):
         super().__init__(product_id, name, price, stock)
         self.__download_size = download_size
+        self.__type = "digital"
 
     def display_information(self):
         super().display_information()
@@ -125,23 +137,21 @@ class Inventory:
     def __init__(self):
         self.__products = {}
 
-    def add_product(self, product):
+    def add_product(self, product): # adds product to dict or prints exists message
         if product.product_id in self.__products:
-            print(f"{product.product_id} - {product.name} already exists in the Inventory, it will not be added.")
+            print(f"{product.product_id} - {product.name} already exists in the Inventory, it will not be added.") # create_product checks this already but just in case.
 
         else:
             self.__products[product.product_id] = product
 
-    def search_product(self, product_id):
+    def search_product(self, product_id): # Returns product_id or None
         if product_id in self.__products:
             return self.__products[product_id]
-            # self.__products[product_id].display_information()
 
         else:
             return None
-            # print(f"The product id '{product_id}' was not found in the Inventory.")
 
-    def display_all(self):
+    def display_all(self): # prints all products
         if not self.__products:
             print("The Inventory is empty.")
 
@@ -155,7 +165,7 @@ class Inventory:
 
             print("\033[A\r------------------------------------------------\n")
 
-    def to_dict(self):
+    def to_dict(self): # returns dict of dicts of products
         return {
             product_id: product.to_dict()
             for product_id, product in self.__products.items()
@@ -166,27 +176,6 @@ def print_system_banner():
     print("\n========================================")
     print("INVENTORY MANAGEMENT SYSTEM")
     print("========================================\n")
-
-
-def load_inventory(inventory_filepath, inventory):
-    try:
-        with open(inventory_filepath, "r", encoding="utf-8") as file:
-            inventory_data = json.load(file)
-
-        print(f"{pathlib.Path(inventory_filepath).name} found.")
-
-        for product in inventory_data.values():
-            inventory.add_product(Product(product["product_id"], product["name"], product["price"], product["stock"]))
-
-    except FileNotFoundError:
-        inventory_data = {}
-
-        with open(inventory_filepath, "w", encoding="utf-8") as file:
-            json.dump(inventory_data, file, indent=4)
-
-        print(f"{pathlib.Path(inventory_filepath).name} not found. Created new inventory file.")
-
-    print("Inventory loaded successfully.\n")
 
 
 def print_option_menu():
@@ -200,7 +189,7 @@ def print_option_menu():
     print("----------------------------\n")
 
 
-def get_option_menu_choice():
+def get_option_menu_choice(): # returns chosen menu option as integer
     while True:
         chosen_option = input("Enter Option: ")
 
@@ -211,16 +200,46 @@ def get_option_menu_choice():
             return int(chosen_option)
 
 
-def add_product(inventory):
-    print("\nAdd New Product")
+def get_product_type():
+    while True:
+        product_type = input("Enter Product Type (Physical/Digital): ").strip().lower()
 
+        if product_type in ["physical", "digital"]:
+            return product_type
+        else:
+            print("Invalid product type. Please enter 'Physical' or 'Digital'.")
+
+
+def get_product_weight():
+    while True:
+        try:
+            weight = float(input("Weight (kg): "))
+            if weight < 0:
+                raise ValueError
+            return weight
+        except ValueError:
+            print("Invalid weight. Please enter a positive number.")
+
+
+def get_product_download_size():
+    while True:
+        try:
+            download_size = float(input("Download Size (MB): "))
+            if download_size < 0:
+                raise ValueError
+            return download_size
+        except ValueError:
+            print("Invalid download size. Please enter a positive number.")
+
+
+def add_product(product_type, inventory): # returns None or PhysicalProduct object or DigitalProduct object
     while True:
         product_id = input("Product ID: ")
 
         if re.match(r'^P\d{3}$', product_id):
             if inventory.search_product(product_id):
                 print("Product ID already exists.")
-                return # just return straight to main menu instead of prompting for new id. Saves trouble of implementing a word to exit the input loop.
+                return # just return straight to main menu instead of prompting for new id. Saves trouble of implementing a word to exit the search loop.
             break
         else:
             print("Invalid Product ID format. Please use 'P' followed by 3 digits (e.g., P001).")
@@ -245,7 +264,13 @@ def add_product(inventory):
         except ValueError:
             print("Invalid stock quantity. Please enter a positive whole number.")
 
-    inventory.add_product(Product(product_id, name, round(price, 2), stock))
+    if product_type == "physical":
+        weight = get_product_weight()
+        inventory.add_product(PhysicalProduct(product_id, name, round(price, 2), stock, weight))
+
+    elif product_type == "digital":
+        download_size = get_product_download_size()
+        inventory.add_product(DigitalProduct(product_id, name, round(price, 2), stock, download_size))
 
     print("Product added successfully!\n")
 
@@ -302,6 +327,31 @@ def search_product(inventory):
     print("------------------------------------------------\n")
 
 
+def load_inventory(inventory_filepath, inventory):
+    try:
+        with open(inventory_filepath, "r", encoding="utf-8") as file:
+            inventory_data = json.load(file)
+
+        print(f"{pathlib.Path(inventory_filepath).name} found.")
+
+        for product in inventory_data.values():
+            if product["type"] == "physical":
+                inventory.add_product(PhysicalProduct(product["product_id"], product["name"], product["price"], product["stock"], product["weight"]))
+
+            elif product["type"] == "digital":
+                inventory.add_product(DigitalProduct(product["product_id"], product["name"], product["price"], product["stock"], product["download_size"]))
+
+    except FileNotFoundError:
+        inventory_data = {}
+
+        with open(inventory_filepath, "w", encoding="utf-8") as file:
+            json.dump(inventory_data, file, indent=4)
+
+        print(f"{pathlib.Path(inventory_filepath).name} not found. Created new inventory file.")
+
+    print("Inventory loaded successfully.\n")
+
+
 def save_inventory(inventory, inventory_filepath, manual_save=False):
     if manual_save:
         print("\nSaving inventory...")
@@ -346,7 +396,7 @@ def main():
                 continue
 
             case 2: # Add Product
-                add_product(inventory)
+                add_product(get_product_type(), inventory)
                 continue
 
             case 3: # Update Stock
