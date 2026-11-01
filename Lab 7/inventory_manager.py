@@ -11,6 +11,10 @@
     something like if "weight" in product_dict: to determine if it is a PhysicalProduct or DigitalProduct.
     This means that if some new product type is added with weight but is not a PhysicalProduct, it would be 
     misidentified. Instead, storing a type attribute to the product would probably be better.
+
+    Did not see brief ask to implement a way to display shipping cost or fulfilment info, left it out for future lab?
+
+    "Screenshot of git and docker workflow as per previous labs." I assume screenshot of git means git log > log.txt
 """
 
 import os
