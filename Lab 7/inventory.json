@@ -3,18 +3,32 @@
         "product_id": "P004",
         "name": "Monitor",
         "price": 299.99,
-        "stock": 51
+        "stock": 51,
+        "type": "physical",
+        "weight": 5.5
     },
     "P001": {
         "product_id": "P001",
         "name": "Laptop",
         "price": 1200.0,
-        "stock": 15
+        "stock": 15,
+        "type": "physical",
+        "weight": 2.5
     },
     "P003": {
         "product_id": "P003",
         "name": "Keyboard",
         "price": 45.0,
-        "stock": 25
+        "stock": 23,
+        "type": "physical",
+        "weight": 0.8
+    },
+    "P006": {
+        "product_id": "P006",
+        "name": "Windows 11 Home",
+        "price": 89.99,
+        "stock": 100,
+        "type": "digital",
+        "download_size": 854.0
     }
 }

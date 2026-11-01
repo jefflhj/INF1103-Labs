@@ -27,12 +27,12 @@ class CanBeShipped(ABC):
 
 
 class Product(ABC):
-    def __init__(self, product_id, name, price, stock):
+    def __init__(self, product_id, name, price, stock, type):
         self.__product_id = product_id
         self.__name = name
         self.__price = price
         self.__stock = stock
-        self.__type = None
+        self.__type = type
 
     def update_stock(self, quantity):
         if quantity >= 0 and isinstance(quantity, int): # not really needed here since input validation alr done in the update_stock function
@@ -80,9 +80,8 @@ class Product(ABC):
 
 class PhysicalProduct(Product, CanBeShipped):
     def __init__(self, product_id, name, price, stock, weight):
-        super().__init__(product_id, name, price, stock)
+        super().__init__(product_id, name, price, stock, type="physical")
         self.__weight = weight
-        self.__type = "physical"
 
     def display_information(self):
         super().display_information()
@@ -112,9 +111,8 @@ class PhysicalProduct(Product, CanBeShipped):
 
 class DigitalProduct(Product):
     def __init__(self, product_id, name, price, stock, download_size):
-        super().__init__(product_id, name, price, stock)
+        super().__init__(product_id, name, price, stock, type="digital")
         self.__download_size = download_size
-        self.__type = "digital"
 
     def display_information(self):
         super().display_information()
