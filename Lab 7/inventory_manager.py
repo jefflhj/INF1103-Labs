@@ -9,9 +9,10 @@ import os
 import json
 import pathlib
 import re
+from abc import ABC, abstractmethod
 
 
-class Product:
+class Product(ABC):
     def __init__(self, product_id, name, price, stock):
         self.__product_id = product_id
         self.__name = name
@@ -39,6 +40,10 @@ class Product:
             "price": self.__price,
             "stock": self.__stock
         }
+
+    @abstractmethod
+    def get_fulfilment_info(self):
+        pass
 
     @property
     def product_id(self):
@@ -71,6 +76,9 @@ class PhysicalProduct(Product):
         product_dict["weight"] = self.__weight
         return product_dict
 
+    def get_fulfilment_info(self):
+        return f"This product requires physical shipping. Shipping weight: {self.__weight} kg"
+
     @property
     def weight(self):
         return self.__weight
@@ -90,8 +98,11 @@ class DigitalProduct(Product):
         product_dict["download_size"] = self.__download_size
         return product_dict
 
+    def get_fulfilment_info(self):
+        return f"This product is delivered digitally. Download size: {self.__download_size} MB"
+
     @property
-    def downlaod_size(self):
+    def download_size(self):
         return self.__download_size
 
 
