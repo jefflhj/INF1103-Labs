@@ -15,163 +15,18 @@
     Did not see brief ask to implement a way to display shipping cost or fulfilment info, left it out for future lab?
 
     "Screenshot of git and docker workflow as per previous labs." I assume screenshot of git means git log > log.txt
+
+    Moved classes to separate files.
 """
 
 import os
 import json
 import pathlib
 import re
-from abc import ABC, abstractmethod
 
-
-class CanBeShipped(ABC):
-    @abstractmethod
-    def calculate_shipping_cost(self):
-        pass
-
-
-class Product(ABC):
-    def __init__(self, product_id, name, price, stock, type):
-        self.__product_id = product_id
-        self.__name = name
-        self.__price = price
-        self.__stock = stock
-        self.__type = type
-
-    def update_stock(self, quantity):
-        if quantity >= 0 and isinstance(quantity, int): # not really needed here since input validation alr done in the update_stock function
-            self.__stock = quantity
-            return True
-
-        else:
-            return False
-
-    def display_information(self):
-        print(f"ID: {self.__product_id}")
-        print(f"Name: {self.__name}")
-        print(f"Price: ${self.price:.2f}")
-        print(f"Stock: {self.stock}")
-
-    def to_dict(self):
-        return {
-            "product_id": self.__product_id,
-            "name": self.__name,
-            "price": self.__price,
-            "stock": self.__stock,
-            "type": self.__type
-        }
-
-    @abstractmethod
-    def get_fulfilment_info(self):
-        pass
-
-    @property
-    def product_id(self):
-        return self.__product_id # These are immutable so they cant be edited outide the class even if exposed like this. Example if return a dict, then they would be editable outside.
-
-    @property
-    def name(self):
-        return self.__name
-
-    @property
-    def price(self):
-        return self.__price
-
-    @property
-    def stock(self):
-        return self.__stock
-
-
-class PhysicalProduct(Product, CanBeShipped):
-    def __init__(self, product_id, name, price, stock, weight):
-        super().__init__(product_id, name, price, stock, type="physical")
-        self.__weight = weight
-
-    def display_information(self):
-        super().display_information()
-        print(f"Weight: {self.__weight} kg")
-
-    def to_dict(self):
-        product_dict = super().to_dict()
-        product_dict["weight"] = self.__weight
-        return product_dict
-
-    def get_fulfilment_info(self):
-        return f"This product requires physical shipping. Shipping weight: {self.__weight} kg"
-
-    def calculate_shipping_cost(self):
-        base_cost = 1.99
-
-        if self.__weight <= 2.00:
-            return base_cost
-        
-        cost_per_kg = 1.00
-        return base_cost + (cost_per_kg * self.__weight)
-
-    @property
-    def weight(self):
-        return self.__weight
-
-
-class DigitalProduct(Product):
-    def __init__(self, product_id, name, price, stock, download_size):
-        super().__init__(product_id, name, price, stock, type="digital")
-        self.__download_size = download_size
-
-    def display_information(self):
-        super().display_information()
-        print(f"Download Size: {self.__download_size} MB")
-
-    def to_dict(self):
-        product_dict = super().to_dict()
-        product_dict["download_size"] = self.__download_size
-        return product_dict
-
-    def get_fulfilment_info(self):
-        return f"This product is delivered digitally. Download size: {self.__download_size} MB"
-
-    @property
-    def download_size(self):
-        return self.__download_size
-
-
-class Inventory:
-    def __init__(self):
-        self.__products = {}
-
-    def add_product(self, product): # adds product to dict or prints exists message
-        if product.product_id in self.__products:
-            print(f"{product.product_id} - {product.name} already exists in the Inventory, it will not be added.") # create_product checks this already but just in case.
-
-        else:
-            self.__products[product.product_id] = product
-
-    def search_product(self, product_id): # Returns product_id or None
-        if product_id in self.__products:
-            return self.__products[product_id]
-
-        else:
-            return None
-
-    def display_all(self): # prints all products
-        if not self.__products:
-            print("The Inventory is empty.")
-
-        else:
-            print("\nCurrent Inventory")
-            print("------------------------------------------------")
-
-            for product in self.__products:
-                self.__products[product].display_information()
-                print()
-
-            print("\033[A\r------------------------------------------------\n")
-
-    def to_dict(self): # returns dict of dicts of products
-        return {
-            product_id: product.to_dict()
-            for product_id, product in self.__products.items()
-        }
+from inventory import Inventory
+from physical_product import PhysicalProduct
+from digital_product import DigitalProduct
 
 
 def print_system_banner():
