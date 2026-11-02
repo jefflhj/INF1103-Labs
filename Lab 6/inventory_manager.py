@@ -3,6 +3,8 @@
 
     Lab 6. Object oriented.
     Inventory items as objects.
+
+    Separated classes to their own files.
 """
 
 import os
@@ -10,92 +12,8 @@ import json
 import pathlib
 import re
 
-
-class Product:
-    def __init__(self, product_id, name, price, stock):
-        self.__product_id = product_id
-        self.__name = name
-        self.__price = price
-        self.__stock = stock
-
-    def update_stock(self, quantity):
-        if quantity >= 0 and isinstance(quantity, int): # not really needed here since input validation alr done in the update_stock function
-            self.__stock = quantity
-            return True
-
-        else:
-            return False
-
-    def display_information(self):
-        print(f"ID: {self.__product_id}")
-        print(f"Name: {self.__name}")
-        print(f"Price: ${self.price:.2f}")
-        print(f"Stock: {self.stock}")
-
-    def to_dict(self):
-        return {
-            "product_id": self.__product_id,
-            "name": self.__name,
-            "price": self.__price,
-            "stock": self.__stock
-        }
-
-    @property
-    def product_id(self):
-        return self.__product_id # These are immutable so they cant be edited outide the class even if exposed like this. Example if return a dict, then they would be editable outside.
-
-    @property
-    def name(self):
-        return self.__name
-
-    @property
-    def price(self):
-        return self.__price
-
-    @property
-    def stock(self):
-        return self.__stock
-
-
-class Inventory:
-    def __init__(self):
-        self.__products = {}
-
-    def add_product(self, product):
-        if product.product_id in self.__products:
-            print(f"{product.product_id} - {product.name} already exists in the Inventory, it will not be added.")
-
-        else:
-            self.__products[product.product_id] = product
-
-    def search_product(self, product_id):
-        if product_id in self.__products:
-            return self.__products[product_id]
-            # self.__products[product_id].display_information()
-
-        else:
-            return None
-            # print(f"The product id '{product_id}' was not found in the Inventory.")
-
-    def display_all(self):
-        if not self.__products:
-            print("The Inventory is empty.")
-
-        else:
-            print("\nCurrent Inventory")
-            print("------------------------------------------------")
-
-            for product in self.__products:
-                self.__products[product].display_information()
-                print()
-
-            print("\033[A\r------------------------------------------------\n")
-
-    def to_dict(self):
-        return {
-            product_id: product.to_dict()
-            for product_id, product in self.__products.items()
-        }
+from product import Product
+from inventory import Inventory
 
 
 def print_system_banner():
