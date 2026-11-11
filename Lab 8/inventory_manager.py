@@ -279,6 +279,15 @@ if __name__ == "__main__":
 
     bacardi = Supplier("S001", "Bacardi", "bacardi@gmail.com")
     dom = PhysicalProduct("P008", "Dom Benedictine", 74.21, 89, bacardi, 0.75)
+    inv = Inventory()
 
-    dom.display_supplier_information()
+    dom.display_information()
+    inv.add_product(dom)
+    inv.display_all()
+
+    inv.remove_product(dom)
+
+    dom.display_information()
+    inv.display_all()
+
 
