@@ -9,5 +9,5 @@ class Supplier:
     def display_information(self):
         print(f"ID: {self._supplier_id}")
         print(f"Name: {self._name}")
-        print(f"Email: ${self._contact_email}")
+        print(f"Email: {self._contact_email}")
 

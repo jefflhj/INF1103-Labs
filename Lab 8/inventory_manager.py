@@ -281,3 +281,7 @@ if __name__ == "__main__":
     dom = PhysicalProduct("P008", "Dom Benedictine", 74.21, 89, bacardi, 0.75)
 
     dom.display_supplier_information()
+
+    del bacardi
+
+    dom.display_supplier_information()
