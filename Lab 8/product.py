@@ -4,13 +4,14 @@ from supplier import Supplier
 
 
 class Product(ABC):
-    def __init__(self, product_id: str, name: str, price: float, stock: int, supplier: Supplier, type: str):
+    def __init__(self, product_id: str, name: str, price: float, stock: int, type: str, supplier: Supplier):
         self.__product_id = product_id
         self.__name = name
         self.__price = price
         self.__stock = stock
-        self._supplier: Supplier = supplier
         self.__type = type
+        self._supplier: Supplier = supplier
+
 
     def update_stock(self, quantity: int) -> bool:
         if quantity >= 0 and isinstance(quantity, int): # not really needed here since input validation alr done in the update_stock function

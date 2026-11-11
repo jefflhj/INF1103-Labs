@@ -20,6 +20,7 @@ from physical_product import PhysicalProduct
 from digital_product import DigitalProduct
 from supplier import Supplier
 from order import Order
+from suppliers import Suppliers
 
 
 def print_system_banner():
@@ -31,11 +32,12 @@ def print_system_banner():
 def print_option_menu():
     print("----------- MENU -----------")
     print("1. Display All Products")
-    print("2. Add Product")
-    print("3. Update Stock")
-    print("4. Search Product")
-    print("5. Save Inventory")
-    print("6. Exit")
+    print("2. Add Supplier")
+    print("3. Add Product")
+    print("4. Update Stock")
+    print("5. Search Product")
+    print("6. Save Inventory")
+    print("7. Exit")
     print("----------------------------\n")
 
 
@@ -43,11 +45,29 @@ def get_option_menu_choice(): # returns chosen menu option as integer
     while True:
         chosen_option = input("Enter Option: ")
 
-        if chosen_option not in ["1", "2", "3", "4", "5", "6"]:
+        if chosen_option not in ["1", "2", "3", "4", "5", "6", "7"]:
             print("\nPlease select an option from the menu.\n")
             continue
         else:
             return int(chosen_option)
+
+
+def create_supplier(inventory):
+    while True:
+        supplier_id = input("Supplier ID: ")
+
+        if re.match(r'^S\d{3}$', supplier_id):
+            if inventory.search_supplier(supplier_id):
+                print("Supplier ID already exists.")
+                return # just return straight to main menu instead of prompting for new id. Saves trouble of implementing a word to exit the search loop.
+            break
+        else:
+            print("Invalid Supplier ID format. Please use 'S' followed by 3 digits (e.g., S001).")
+
+    name = input("Supplier Name: ")
+    email = input("Contact Email: ") # could regex for valid email
+
+    return Supplier(supplier_id, name, email)
 
 
 def get_product_type():
@@ -113,6 +133,16 @@ def add_product(product_type, inventory): # returns None or PhysicalProduct obje
             break
         except ValueError:
             print("Invalid stock quantity. Please enter a positive whole number.")
+
+    while True:
+        supplier_id = input("Supplier ID: ")
+
+        if re.match(r'^S\d{3}$', supplier_id):
+            if inventory.search_product(supplier_id):
+                supplier = #inventory.get_supplier()
+            break
+        else:
+            print("Invalid Supplier ID format. Please use 'S' followed by 3 digits (e.g., S001).")
 
     if product_type == "physical":
         weight = get_product_weight()
@@ -202,6 +232,27 @@ def load_inventory(inventory_filepath, inventory):
     print("Inventory loaded successfully.\n")
 
 
+def load_suppliers(suppliers_filepath, suppliers):
+    try:
+        with open(suppliers_filepath, "r", encoding="utf-8") as file:
+            suppliers_data = json.load(file)
+
+        print(f"{pathlib.Path(suppliers_filepath).name} found.")
+
+        for supplier in suppliers_data.values():
+            suppliers.add_supplier(Supplier(supplier["supplier_id"], supplier["name"], supplier["contact_email"]))
+
+    except FileNotFoundError:
+        suppliers_data = {}
+
+        with open(suppliers_filepath, "w", encoding="utf-8") as file:
+            json.dump(suppliers_data, file, indent=4)
+
+        print(f"{pathlib.Path(suppliers_filepath).name} not found. Created new suppliers file.")
+
+    print("Suppliers loaded successfully.\n")
+
+
 def save_inventory(inventory, inventory_filepath, manual_save=False):
     if manual_save:
         print("\nSaving inventory...")
@@ -230,12 +281,15 @@ def exit_program(inventory, inventory_filepath):
 
 def main():
     inventory_filepath = os.getenv("INVENTORY_FILE", "./inventory.json")
+    suppliers_filepath = os.getenv("SUPPLIERS_FILE", "./suppliers.json")
 
     print_system_banner()
 
     inventory = Inventory()
+    suppliers = Suppliers()
 
     load_inventory(inventory_filepath, inventory)
+    load_suppliers(suppliers_filepath, suppliers)
 
     print_option_menu()
 
@@ -245,35 +299,29 @@ def main():
                 inventory.display_all()
                 continue
 
-            case 2: # Add Product
+            case 2: # Add Supplier
+                pass
+
+            case 3: # Add Product
                 add_product(get_product_type(), inventory)
                 continue
 
-            case 3: # Update Stock
+            case 4: # Update Stock
                 update_stock(inventory)
                 continue
 
-            case 4: # Search Product
+            case 5: # Search Product
                 search_product(inventory)
                 continue
 
-            case 5: # Save Inventory
+            case 6: # Save Inventory
                 save_inventory(inventory, inventory_filepath, True)
                 continue
 
-            case 6: # Exit
+            case 7: # Exit
                 exit_program(inventory, inventory_filepath)
                 return
 
 
 if __name__ == "__main__":
-    # main()
-
-    bacardi = Supplier("S001", "Bacardi", "bacardi@gmail.com")
-    rockstar = Supplier("S002", "Rockstar", "rockstar@gmail.com")
-    dom = PhysicalProduct("P008", "Dom Benedictine", 74.21, 89, bacardi, 0.75)
-    gta = DigitalProduct("P006", "GTA", 199.99, 1, rockstar, 10000.01)
-    inv = Inventory()
-
-    import test
-    test.show_info_fulfilment(inv, dom, gta)
+    main()

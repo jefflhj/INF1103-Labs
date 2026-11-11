@@ -45,4 +45,3 @@ class Inventory:
             product_id: product.to_dict()
             for product_id, product in self.__products.items()
         }
-
