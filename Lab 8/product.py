@@ -20,13 +20,13 @@ class Product(ABC):
         else:
             return False
 
-    def display_information(self):
+    def display_information(self) -> None:
         print(f"ID: {self.__product_id}")
         print(f"Name: {self.__name}")
         print(f"Price: ${self.price:.2f}")
         print(f"Stock: {self.stock}")
 
-    def display_supplier_information(self):
+    def display_supplier_information(self) -> None:
         self._supplier.display_information()
 
     def to_dict(self) -> dict:

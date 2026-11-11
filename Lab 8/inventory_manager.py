@@ -3,8 +3,11 @@
 
     Lab 8. Object oriented.
     Created Supplier class.
-    Added some type hints.
+    Added type hints.
     Added remove_product for Inventory.
+    Created Orders, OrderLine.
+    LSP.
+    Product: get_product_mass(): pass   PhysicalProduct: get_product_mass(): return self._weight   DigitalProduct: get_product_mass(): return self._size ?
 """
 
 import os
@@ -267,16 +270,10 @@ if __name__ == "__main__":
     # main()
 
     bacardi = Supplier("S001", "Bacardi", "bacardi@gmail.com")
+    rockstar = Supplier("S002", "Rockstar", "rockstar@gmail.com")
     dom = PhysicalProduct("P008", "Dom Benedictine", 74.21, 89, bacardi, 0.75)
+    gta = DigitalProduct("P006", "GTA", 199.99, 1, rockstar, 10000.01)
     inv = Inventory()
-    order1 = Order("O001")
-    order2 = Order("O002")
 
-    order1.add_order_line(dom, 2)
-    order2.add_order_line(dom, 4)
-
-    print(id(order1.order_lines[0]))
-    print(id(order2.order_lines[0]))
-
-    print(id(order1.order_lines[0]._product))
-    print(id(order2.order_lines[0]._product))
+    import test
+    test.show_info_fulfilment(inv, dom, gta)

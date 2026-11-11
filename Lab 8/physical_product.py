@@ -8,7 +8,7 @@ class PhysicalProduct(Product, CanBeShipped):
         super().__init__(product_id, name, price, stock, supplier, type="physical")
         self.__weight = weight
 
-    def display_information(self):
+    def display_information(self) -> None:
         super().display_information()
         print(f"Weight: {self.__weight} kg")
 

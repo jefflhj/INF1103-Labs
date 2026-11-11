@@ -5,14 +5,14 @@ class Inventory:
     def __init__(self):
         self.__products: dict[str, Product] = {}
 
-    def add_product(self, product: Product): # adds product to dict or prints exists message
+    def add_product(self, product: Product) -> None: # adds product to dict or prints exists message
         if product.product_id in self.__products:
             print(f"{product.product_id} - {product.name} already exists in the Inventory, it will not be added.") # create_product checks this already but just in case.
 
         else:
             self.__products[product.product_id] = product
 
-    def remove_product(self, product: Product):
+    def remove_product(self, product: Product) -> None:
         if product.product_id in self.__products:
             del self.__products[product.product_id]
 
@@ -26,7 +26,7 @@ class Inventory:
         else:
             return None
 
-    def display_all(self): # prints all products
+    def display_all(self) -> None: # prints all products
         if not self.__products:
             print("The Inventory is empty.")
 
