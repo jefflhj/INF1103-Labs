@@ -40,7 +40,7 @@ class Inventory:
 
             print("\033[A\r------------------------------------------------\n")
 
-    def to_dict(self): # returns dict of dicts of products
+    def to_dict(self) -> dict[str, dict]: # returns dict of dicts of products
         return {
             product_id: product.to_dict()
             for product_id, product in self.__products.items()

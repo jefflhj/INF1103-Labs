@@ -12,7 +12,7 @@ class Product(ABC):
         self._supplier: Supplier = supplier
         self.__type = type
 
-    def update_stock(self, quantity):
+    def update_stock(self, quantity: int) -> bool:
         if quantity >= 0 and isinstance(quantity, int): # not really needed here since input validation alr done in the update_stock function
             self.__stock = quantity
             return True
@@ -29,7 +29,7 @@ class Product(ABC):
     def display_supplier_information(self):
         self._supplier.display_information()
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         return {
             "product_id": self.__product_id,
             "name": self.__name,
@@ -39,7 +39,7 @@ class Product(ABC):
         }
 
     @abstractmethod
-    def get_fulfilment_info(self):
+    def get_fulfilment_info(self) -> str:
         pass
 
     @property
