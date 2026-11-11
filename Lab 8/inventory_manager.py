@@ -275,5 +275,8 @@ if __name__ == "__main__":
     order1.add_order_line(dom, 2)
     order2.add_order_line(dom, 4)
 
-    id(order1.order_lines[0])
-    id(order2.order_lines[0])
+    print(id(order1.order_lines[0]))
+    print(id(order2.order_lines[0]))
+
+    print(id(order1.order_lines[0]._product))
+    print(id(order2.order_lines[0]._product))
