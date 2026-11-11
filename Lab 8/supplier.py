@@ -19,7 +19,7 @@ class Supplier:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> Supplier:
+    def from_dict(cls, data: dict):
         return cls(
             supplier_id=data["supplier_id"],
             name=data["name"],
