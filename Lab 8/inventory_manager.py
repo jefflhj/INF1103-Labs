@@ -1,22 +1,10 @@
 """
     Inventory Manager
 
-    Lab 7. Object oriented.
-    Inheritance, Method Overriding, Abstract Classes, Interfaces using abstract base classes.
-
-    "For example, each saved product should include a type identifier such as “physical” or “digital”."
-    This sounds like only when saved should it include a type identifier.
-
-    For the type identifier, if only implemented during save and load from json, it would require 
-    something like if "weight" in product_dict: to determine if it is a PhysicalProduct or DigitalProduct.
-    This means that if some new product type is added with weight but is not a PhysicalProduct, it would be 
-    misidentified. Instead, storing a type attribute to the product would probably be better.
-
-    Did not see brief ask to implement a way to display shipping cost or fulfilment info, left it out for future lab?
-
-    "Screenshot of git and docker workflow as per previous labs." I assume screenshot of git means git log > log.txt
-
-    Moved classes to separate files.
+    Lab 8. Object oriented.
+    Created Supplier class.
+    Added some type hints.
+    Added remove_product for Inventory.
 """
 
 import os
@@ -28,6 +16,7 @@ from inventory import Inventory
 from physical_product import PhysicalProduct
 from digital_product import DigitalProduct
 from supplier import Supplier
+from order import Order
 
 
 def print_system_banner():
@@ -280,14 +269,11 @@ if __name__ == "__main__":
     bacardi = Supplier("S001", "Bacardi", "bacardi@gmail.com")
     dom = PhysicalProduct("P008", "Dom Benedictine", 74.21, 89, bacardi, 0.75)
     inv = Inventory()
+    order1 = Order("O001")
+    order2 = Order("O002")
 
-    dom.display_information()
-    inv.add_product(dom)
-    inv.display_all()
+    order1.add_order_line(dom, 2)
+    order2.add_order_line(dom, 4)
 
-    inv.remove_product(dom)
-
-    dom.display_information()
-    inv.display_all()
-
-
+    id(order1.order_lines[0])
+    id(order2.order_lines[0])
