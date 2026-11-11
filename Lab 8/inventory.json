@@ -5,17 +5,25 @@
         "price": 299.99,
         "stock": 51,
         "type": "physical",
-        "weight": 5.5,
-        "supplier": {}
+        "supplier": {
+            "supplier_id": "S001",
+            "name": "Dell",
+            "contact_email": "dell@dmail.com"
+        },
+        "weight": 5.5
     },
     "P001": {
         "product_id": "P001",
         "name": "Laptop",
         "price": 1200.0,
-        "stock": 14,
+        "stock": 25,
         "type": "physical",
-        "weight": 2.5,
-        "supplier": {}
+        "supplier": {
+            "supplier_id": "S001",
+            "name": "Dell",
+            "contact_email": "dell@dmail.com"
+        },
+        "weight": 2.5
     },
     "P003": {
         "product_id": "P003",
@@ -23,8 +31,12 @@
         "price": 45.0,
         "stock": 23,
         "type": "physical",
-        "weight": 0.8,
-        "supplier": {}
+        "supplier": {
+            "supplier_id": "S001",
+            "name": "Dell",
+            "contact_email": "dell@dmail.com"
+        },
+        "weight": 0.8
     },
     "P006": {
         "product_id": "P006",
@@ -32,7 +44,11 @@
         "price": 89.99,
         "stock": 100,
         "type": "digital",
-        "download_size": 854.0,
-        "supplier": {}
+        "supplier": {
+            "supplier_id": "S002",
+            "name": "Microsoft",
+            "contact_email": "microsoft@omail.com"
+        },
+        "download_size": 854.0
     }
 }

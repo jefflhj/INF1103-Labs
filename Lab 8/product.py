@@ -36,7 +36,8 @@ class Product(ABC):
             "name": self.__name,
             "price": self.__price,
             "stock": self.__stock,
-            "type": self.__type
+            "type": self.__type,
+            "supplier": self._supplier.to_dict()
         }
 
     @abstractmethod

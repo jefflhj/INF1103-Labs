@@ -8,6 +8,9 @@
     Created Orders, OrderLine.
     LSP.
     Product: get_product_mass(): pass   PhysicalProduct: get_product_mass(): return self._weight   DigitalProduct: get_product_mass(): return self._size ?
+
+    What is order supposed to be here? its an inventory manager. Ill wait until Lab 9 to see if it says. This lab sheet does not say anything about implementation
+    but requires docker to run. So i just added whatever made sense minimally.
 """
 
 import os
@@ -52,12 +55,12 @@ def get_option_menu_choice(): # returns chosen menu option as integer
             return int(chosen_option)
 
 
-def create_supplier(inventory):
+def create_supplier(suppliers):
     while True:
         supplier_id = input("Supplier ID: ")
 
         if re.match(r'^S\d{3}$', supplier_id):
-            if inventory.search_supplier(supplier_id):
+            if suppliers.search_supplier(supplier_id):
                 print("Supplier ID already exists.")
                 return # just return straight to main menu instead of prompting for new id. Saves trouble of implementing a word to exit the search loop.
             break
@@ -102,7 +105,7 @@ def get_product_download_size():
             print("Invalid download size. Please enter a positive number.")
 
 
-def add_product(product_type, inventory): # returns None or PhysicalProduct object or DigitalProduct object
+def add_product(product_type, inventory, suppliers): # returns None or PhysicalProduct object or DigitalProduct object
     while True:
         product_id = input("Product ID: ")
 
@@ -138,19 +141,22 @@ def add_product(product_type, inventory): # returns None or PhysicalProduct obje
         supplier_id = input("Supplier ID: ")
 
         if re.match(r'^S\d{3}$', supplier_id):
-            if inventory.search_product(supplier_id):
-                supplier = #inventory.get_supplier()
-            break
+            supplier = suppliers.search_supplier(supplier_id)
+            if supplier:
+                break
+            else:
+                print("Supplier does not exist.")
+                continue
         else:
             print("Invalid Supplier ID format. Please use 'S' followed by 3 digits (e.g., S001).")
 
     if product_type == "physical":
         weight = get_product_weight()
-        inventory.add_product(PhysicalProduct(product_id, name, round(price, 2), stock, weight))
+        inventory.add_product(PhysicalProduct(product_id, name, round(price, 2), stock, weight, supplier))
 
     elif product_type == "digital":
         download_size = get_product_download_size()
-        inventory.add_product(DigitalProduct(product_id, name, round(price, 2), stock, download_size))
+        inventory.add_product(DigitalProduct(product_id, name, round(price, 2), stock, download_size, supplier))
 
     print("Product added successfully!\n")
 
@@ -207,7 +213,7 @@ def search_product(inventory):
     print("------------------------------------------------\n")
 
 
-def load_inventory(inventory_filepath, inventory):
+def load_inventory(inventory_filepath, inventory, suppliers):
     try:
         with open(inventory_filepath, "r", encoding="utf-8") as file:
             inventory_data = json.load(file)
@@ -216,10 +222,10 @@ def load_inventory(inventory_filepath, inventory):
 
         for product in inventory_data.values():
             if product["type"] == "physical":
-                inventory.add_product(PhysicalProduct(product["product_id"], product["name"], product["price"], product["stock"], product["weight"]))
+                inventory.add_product(PhysicalProduct(product["product_id"], product["name"], product["price"], product["stock"], product["weight"], suppliers.search_supplier(product["supplier"]["supplier_id"])))
 
             elif product["type"] == "digital":
-                inventory.add_product(DigitalProduct(product["product_id"], product["name"], product["price"], product["stock"], product["download_size"]))
+                inventory.add_product(DigitalProduct(product["product_id"], product["name"], product["price"], product["stock"], product["download_size"], suppliers.search_supplier(product["supplier"]["supplier_id"])))
 
     except FileNotFoundError:
         inventory_data = {}
@@ -253,6 +259,17 @@ def load_suppliers(suppliers_filepath, suppliers):
     print("Suppliers loaded successfully.\n")
 
 
+def save_suppliers(suppliers, suppliers_filepath):
+    try:
+        with open(suppliers_filepath, "w", encoding="utf-8") as file:
+            json.dump(suppliers.to_dict(), file, indent=4)
+
+            print(f"Suppliers saved successfully to {pathlib.Path(suppliers_filepath).name}.\n")
+
+    except Exception as e:
+        print(f"Error saving Suppliers: {e}\n")
+
+
 def save_inventory(inventory, inventory_filepath, manual_save=False):
     if manual_save:
         print("\nSaving inventory...")
@@ -272,8 +289,9 @@ def save_inventory(inventory, inventory_filepath, manual_save=False):
         print(f"Error saving inventory: {e}\n")
 
 
-def exit_program(inventory, inventory_filepath):
+def exit_program(inventory, inventory_filepath, suppliers, suppliers_filepath):
     save_inventory(inventory, inventory_filepath)
+    save_suppliers(suppliers, suppliers_filepath)
 
     print("Thank you for using Inventory Management System.")
     print("Program terminated.\n")
@@ -285,11 +303,11 @@ def main():
 
     print_system_banner()
 
-    inventory = Inventory()
     suppliers = Suppliers()
+    inventory = Inventory()
 
-    load_inventory(inventory_filepath, inventory)
     load_suppliers(suppliers_filepath, suppliers)
+    load_inventory(inventory_filepath, inventory, suppliers)
 
     print_option_menu()
 
@@ -300,10 +318,11 @@ def main():
                 continue
 
             case 2: # Add Supplier
-                pass
+                suppliers.add_supplier(create_supplier(suppliers))
+                continue
 
             case 3: # Add Product
-                add_product(get_product_type(), inventory)
+                add_product(get_product_type(), inventory, suppliers)
                 continue
 
             case 4: # Update Stock
@@ -319,7 +338,7 @@ def main():
                 continue
 
             case 7: # Exit
-                exit_program(inventory, inventory_filepath)
+                exit_program(inventory, inventory_filepath, suppliers, suppliers_filepath)
                 return
 
 

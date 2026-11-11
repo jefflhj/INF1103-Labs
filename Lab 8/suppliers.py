@@ -18,9 +18,9 @@ class Suppliers:
             print(f"{supplier.__suppliers} - {supplier.name} does not exists in the Suppliers Database, nothing happened.")
 
     def search_supplier(self, supplier_id: str) -> dict | None:
-        for _, details in self.__products.items():
-            if supplier_id in details:
-                return details[supplier_id] # returns a dict version of supplier object
+        for id, supplier in self.__suppliers.items():
+            if supplier_id == id:
+                return supplier # returns the Supplier object
         return None
 
     def to_dict(self) -> dict[str, dict]: # returns dict of dicts of suppliers

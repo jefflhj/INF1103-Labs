@@ -1,0 +1,17 @@
+{
+    "S001": {
+        "supplier_id": "S001",
+        "name": "Dell",
+        "contact_email": "dell@dmail.com"
+    },
+    "S002": {
+        "supplier_id": "S002",
+        "name": "Microsoft",
+        "contact_email": "microsoft@omail.com"
+    },
+    "S003": {
+        "supplier_id": "S003",
+        "name": "Acer",
+        "contact_email": "acer@amail.com"
+    }
+}

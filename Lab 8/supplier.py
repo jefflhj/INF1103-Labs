@@ -17,3 +17,16 @@ class Supplier:
             "name": self._name,
             "contact_email": self._contact_email
         }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> Supplier:
+        return cls(
+            supplier_id=data["supplier_id"],
+            name=data["name"],
+            contact_email=data["contact_email"]
+        )
+
+    @property
+    def supplier_id(self):
+        return self._supplier_id
+
