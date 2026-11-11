@@ -282,6 +282,3 @@ if __name__ == "__main__":
 
     dom.display_supplier_information()
 
-    del bacardi
-
-    dom.display_supplier_information()
