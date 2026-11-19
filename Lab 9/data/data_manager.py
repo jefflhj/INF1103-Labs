@@ -5,7 +5,7 @@ import os
 from suppliers.suppliers import Suppliers
 from suppliers.supplier import Supplier
 from products.products import Products
-from products.product import Product
+from products.product_factory import ProductFactory
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 
@@ -34,7 +34,7 @@ class DataManager:
         data = DataManager.read_csv(self.__products_path)
         products = Products()
         for row in data:
-            product = Product(row["product_type"], row["product_id"], row["name"], row["price"], row["stock_quantity"], Suppliers.search_supplier(row["supplier_id"]))
+            product = ProductFactory.create(row["product_type"], row["product_id"], row["name"], row["price"], row["stock_quantity"], Suppliers.search_supplier(row["supplier_id"]))
             products.add_product(product)
         return products
 

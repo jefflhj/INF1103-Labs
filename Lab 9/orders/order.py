@@ -1,9 +1,6 @@
 from products.product import Product
 from orders.order_line import OrderLine
 from discounts.discount_strategy import DiscountStrategy
-from discounts.no_discount import NoDiscount
-from discounts.percentage_discount import PercentageDiscount
-from discounts.bulk_discount import BulkDiscount
 
 
 class Order:
