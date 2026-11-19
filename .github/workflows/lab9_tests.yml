@@ -2,11 +2,11 @@ name: Automated Test Suite
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
     paths:
       - 'Lab 9/**'
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
     paths:
       - 'Lab 9/**'
   workflow_dispatch:
