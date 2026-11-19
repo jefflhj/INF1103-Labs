@@ -5,6 +5,8 @@
     portal where they can see teir inventory, as 
     well as place orders to suppliers for more stock 
     of a product that is currently in their system.
+    The orders would be printed out on paper then 
+    dealt with externally from the app.
 """
 
 from app.app_engine import AppEngine
