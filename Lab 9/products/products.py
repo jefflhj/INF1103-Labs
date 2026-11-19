@@ -10,14 +10,25 @@ class Products():
     def __init__(self):
         self._products = {}
 
-    def add_product(product: Product) -> None:
-        pass
+    def add_product(self, product: Product) -> str:
+        if product.product_id in self._products:
+            return "Product already exists."
+        else:
+            self._products[product.product_id] = product
+            return "Product added successfully."
 
-    def remove_product():
-        pass
+    def remove_product(self, product: Product) -> str:
+        if product.product_id not in self._products:
+            return "Product does not exist."
+        else:
+            del self._products[product.product_id]
+            return "Product removed successfully."
     
-    def search_product():
-        pass
+    def search_product(self, product_id: str) -> Product | None:
+        if product_id not in self._products:
+            return None
+        else:
+            return self._products[product_id]
 
     def get_all_products(self) -> list[Product]:
         return list(self._products.values())
