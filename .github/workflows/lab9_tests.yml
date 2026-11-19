@@ -3,13 +3,20 @@ name: Automated Test Suite
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'Lab 9/**'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'Lab 9/**'
   workflow_dispatch:
 
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Lab 9
 
     steps:
       - name: Check out repository
