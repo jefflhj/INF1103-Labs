@@ -1,3 +1,8 @@
+"""
+    An order is made up of order line objects.
+    Has an id, items list, and discount strategy if any.
+"""
+
 from products.product import Product
 from orders.order_line import OrderLine
 from discounts.discount_strategy import DiscountStrategy
@@ -19,4 +24,3 @@ class Order:
 
     def set_discount(self, discount_strategy: DiscountStrategy) -> None:
         self._discount_strategy = discount_strategy
-

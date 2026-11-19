@@ -6,4 +6,7 @@ class PercentageDiscount(DiscountStrategy):
         self._percentage = percentage
 
     def apply(self, total: float) -> float:
-        return total - (total * (self._percentage/100))
+        if self._percentage < 0 or self._percentage > 100:
+            raise ValueError("Percentage discount must be between 0 to 100 percent.")
+        else:
+            return total - (total * (self._percentage/100))

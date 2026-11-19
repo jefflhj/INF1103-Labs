@@ -1,7 +1,3 @@
-"""
-    This creates product objects.
-"""
-
 from abc import ABC, abstractmethod
 
 from suppliers.supplier import Supplier
@@ -34,6 +30,10 @@ class Product(ABC):
     def get_fulfilment_info():
         pass
 
+    @abstractmethod
+    def to_csv_dict() -> dict:
+        pass
+
     @property
     def product_type(self) -> str:
         return self._product_type
@@ -44,11 +44,11 @@ class Product(ABC):
 
     @property
     def name(self) -> str:
-        return self.name
+        return self._name
 
     @property
     def price(self) -> float:
-        return self.price
+        return self._price
 
     @property
     def stock_quantity(self) -> int:

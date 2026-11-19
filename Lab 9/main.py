@@ -1,12 +1,10 @@
 """
     Lab 9
 
-    The lab sheet is too confusing, it doesn't add on 
-    from previous labs.
-    This is not an inventory management system anymore.
-    I will just make it something like an app that can
-    display products, display suppliers, and place orders
-    products, suppliers, orders will be objects.
+    My idea of this app is that it is like an admin 
+    portal where they can see teir inventory, as 
+    well as place orders to suppliers for more stock 
+    of a product that is currently in their system.
 """
 
 

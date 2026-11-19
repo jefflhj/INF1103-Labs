@@ -1,3 +1,8 @@
+"""
+    An order line is a specific item in the order.
+    Created inside Order's add_order_line method.
+"""
+
 from products.product import Product
 
 
