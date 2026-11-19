@@ -20,8 +20,8 @@ class Supplier:
 
     @property
     def name(self):
-        return self.name
+        return self._name
 
     @property
     def email(self):
-        return self.email
+        return self._email

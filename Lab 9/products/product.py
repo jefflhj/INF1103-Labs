@@ -5,14 +5,20 @@ from suppliers.supplier import Supplier
 
 class Product(ABC):
     def __init__(self, product_type: str, product_id: str, name: str, price: float, stock_quantity: int, supplier: Supplier):
+        if price <= 0:
+            raise ValueError("Product price must be greater than zero.")
+        if stock_quantity < 0:
+            raise ValueError("Product stock quantity cannot be negative.")
         self._product_type = product_type
         self._product_id = product_id
         self._name = name
-        self._price = price
-        self._stock_quantity = stock_quantity
+        self._price = float(price)
+        self._stock_quantity = int(stock_quantity)
         self._supplier = supplier
 
-    def update_stock(self, new_quantity):
+    def update_stock(self, new_quantity: int) -> None:
+        if new_quantity < 0:
+            raise ValueError("Product stock quantity cannot be negative.")
         self._stock_quantity = new_quantity
 
     def display_information(self) -> None:
@@ -27,11 +33,11 @@ class Product(ABC):
         print(f"Stock: {self._stock_quantity}")
         
     @abstractmethod
-    def get_fulfilment_info():
+    def get_fulfilment_info(self) -> str:
         pass
 
     @abstractmethod
-    def to_csv_dict() -> dict:
+    def to_csv_dict(self) -> dict:
         pass
 
     @property

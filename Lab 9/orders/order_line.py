@@ -8,8 +8,9 @@ from products.product import Product
 
 class OrderLine:
     def __init__(self, product: Product, quantity: int):
+        if quantity <= 0:
+            raise ValueError("Order quantity must be greater than zero.")
         self._product = product
         self._quantity = quantity
-
     def calculate_subtotal(self) -> float:
         return self._product.price * self._quantity

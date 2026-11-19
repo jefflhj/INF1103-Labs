@@ -7,9 +7,6 @@ class BulkDiscount(DiscountStrategy):
         self._amount = amount
 
     def apply(self, total: float) -> float:
-        if self._amount > total:
-            return 0.00
-        elif total >= self._threshold:
-            return total - self._amount
-        else:
-            return total
+        if total >= self._threshold:
+            return max(total - self._amount, 0.00)
+        return total
