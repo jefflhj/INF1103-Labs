@@ -93,7 +93,7 @@ class Tests(unittest.TestCase):
                 inventory = manager.load_products(Suppliers())
             self.assertEqual(inventory.get_all_products(), [])
             self.assertTrue(Path(missing).exists())
-        self.assertIn("Products file not found", " ".join(manager.load_warnings))
+        self.assertIn("Products file not found", " ".join(manager.load_messages))
 
     def test_10_bad_csv_rows_are_skipped_and_valid_rows_load(self):
         csv_content = (
@@ -117,8 +117,8 @@ class Tests(unittest.TestCase):
         self.assertIsNotNone(inventory.search_product("P101"))
         self.assertIsNotNone(inventory.search_product("D101"))
         self.assertIsNotNone(inventory.search_product("P103"))
-        warnings = " ".join(manager.load_warnings)
-        self.assertEqual(len(manager.load_warnings), 3)
+        warnings = " ".join(manager.load_messages)
+        self.assertEqual(len(manager.load_messages), 3)
         self.assertIn("Skipping invalid product row", warnings)
         self.assertIn("Unknown product type: service", warnings)
         self.assertIn("Unknown supplier ID: S999", warnings)
@@ -146,7 +146,7 @@ class Tests(unittest.TestCase):
                 manager.save_products(inventory)
                 loaded_suppliers = manager.load_suppliers()
                 loaded = manager.load_products(loaded_suppliers)
-        self.assertEqual(manager.load_warnings, [])
+        self.assertEqual(manager.load_messages, [])
         self.assertEqual(len(loaded.get_all_products()), 2)
         self.assertEqual(loaded.search_product("P001").stock_quantity, 10)
         self.assertEqual(loaded.search_product("D001").download_size, 200.0)
