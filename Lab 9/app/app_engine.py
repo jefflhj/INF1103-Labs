@@ -55,9 +55,9 @@ class AppEngine:
 
     def _load_inventory(self) -> None:
         self._suppliers = self._data_manager.load_suppliers()
-        warnings = self._data_manager.load_warnings
+        warnings = self._data_manager.load_messages
         self._products = self._data_manager.load_products(self._suppliers)
-        warnings += self._data_manager.load_warnings
+        warnings += self._data_manager.load_messages
 
         IOManager.print_system_banner()
         IOManager.show_messages(warnings)
